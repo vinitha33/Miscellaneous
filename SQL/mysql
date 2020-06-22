@@ -1,0 +1,200 @@
+mysql> use prac;
+
+mysql> CREATE TABLE sample1(sr_no INT PRIMARY KEY, name VARCHAR(10), age INT, gender CHAR(1) NOT NULL, subject VARCHAR(10), marks INT, state VARCHAR(10), country VARCHAR(10));
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (1,'Vinitha',22,'F','Maths',80,'Kerala','India');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (2,'Arghyaa',23,'F','Science',90,'UP','India');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (3,'Roshan',19,'M','Social',50,'Melbourne','Australia');
+Query OK, 1 row affected (0.21 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (4,'Mohan',25,'M','Maths',100,'Orlando','US');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (5,'Yoshida',20,'F','Computer',40,'MH','India');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state, country) VALUES (6,'Ram',15,'M','Social',70,'Dubai','UAE');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks) VALUES (7,'Radha',28,'F','Computer',90);
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO sample1(sr_no, name, age, gender, subject, marks, state) VALUES (8,'Divya',23,'F','Maths',90, 'Gujarat');
+Query OK, 1 row affected (0.17 sec)
+
+mysql> SELECT * FROM sample1;
++-------+---------+------+--------+----------+-------+-----------+-----------+
+| sr_no | name    | age  | gender | subject  | marks | state     | country   |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+|     1 | Vinitha |   22 | F      | Maths    |    80 | Kerala    | India     |
+|     2 | Arghyaa |   23 | F      | Science  |    90 | UP        | India     |
+|     3 | Roshan  |   19 | M      | Social   |    50 | Melbourne | Australia |
+|     4 | Mohan   |   25 | M      | Maths    |   100 | Orlando   | US        |
+|     5 | Yoshida |   20 | F      | Computer |    40 | MH        | India     |
+|     6 | Ram     |   15 | M      | Social   |    70 | Dubai     | UAE       |
+|     7 | Radha   |   28 | F      | Computer |    90 | NULL      | NULL      |
+|     8 | Divya   |   23 | F      | Maths    |    90 | Gujarat   | NULL      |
+|     9 | Vihaana |   22 | F      | Computer |    40 | MH        | India     |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+9 rows in set (0.00 sec)
+
+-------Displaying all the 'Female' candidates-----------------
+
+mysql> SELECT * FROM sample1 WHERE gender LIKE 'F';
++-------+---------+------+--------+----------+-------+---------+---------+
+| sr_no | name    | age  | gender | subject  | marks | state   | country |
++-------+---------+------+--------+----------+-------+---------+---------+
+|     1 | Vinitha |   22 | F      | Maths    |    80 | Kerala  | India   |
+|     2 | Arghyaa |   23 | F      | Science  |    90 | UP      | India   |
+|     5 | Yoshida |   20 | F      | Computer |    40 | MH      | India   |
+|     7 | Radha   |   28 | F      | Computer |    90 | NULL    | NULL    |
+|     8 | Divya   |   23 | F      | Maths    |    90 | Gujarat | NULL    |
++-------+---------+------+--------+----------+-------+---------+---------+
+5 rows in set (0.00 sec)
+
+
+---------Updating table, setting country as India where state is Gujarat-------------
+
+mysql> UPDATE sample1 SET country = "India" WHERE state= "Gujarat";
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT * FROM sample1;
++-------+---------+------+--------+----------+-------+-----------+-----------+
+| sr_no | name    | age  | gender | subject  | marks | state     | country   |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+|     1 | Vinitha |   22 | F      | Maths    |    80 | Kerala    | India     |
+|     2 | Arghyaa |   23 | F      | Science  |    90 | UP        | India     |
+|     3 | Roshan  |   19 | M      | Social   |    50 | Melbourne | Australia |
+|     4 | Mohan   |   25 | M      | Maths    |   100 | Orlando   | US        |
+|     5 | Yoshida |   20 | F      | Computer |    40 | MH        | India     |
+|     6 | Ram     |   15 | M      | Social   |    70 | Dubai     | UAE       |
+|     7 | Radha   |   28 | F      | Computer |    90 | NULL      | NULL      |
+|     8 | Divya   |   23 | F      | Maths    |    90 | Gujarat   | India     |
+|     9 | Vihaana |   22 | F      | Computer |    40 | MH        | India     |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+9 rows in set (0.00 sec)
+
+
+-------------SOrting the records in ascending order by names---------------
+
+
+mysql> SELECT * FROM sample1 ORDER BY name;
++-------+---------+------+--------+----------+-------+-----------+-----------+
+| sr_no | name    | age  | gender | subject  | marks | state     | country   |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+|     2 | Arghyaa |   23 | F      | Science  |    90 | UP        | India     |
+|     8 | Divya   |   23 | F      | Maths    |    90 | Gujarat   | India     |
+|     4 | Mohan   |   25 | M      | Maths    |   100 | Orlando   | US        |
+|     7 | Radha   |   28 | F      | Computer |    90 | NULL      | NULL      |
+|     6 | Ram     |   15 | M      | Social   |    70 | Dubai     | UAE       |
+|     3 | Roshan  |   19 | M      | Social   |    50 | Melbourne | Australia |
+|     9 | Vihaana |   22 | F      | Computer |    40 | MH        | India     |
+|     1 | Vinitha |   22 | F      | Maths    |    80 | Kerala    | India     |
+|     5 | Yoshida |   20 | F      | Computer |    40 | MH        | India     |
++-------+---------+------+--------+----------+-------+-----------+-----------+
+9 rows in set (0.00 sec)
+
+-------------------Displaying sum of marks scored by students grouped by subject--------------
+
+mysql> SELECT subject,sum(marks) FROM sample1 group by subject;
++----------+------------+
+| subject  | sum(marks) |
++----------+------------+
+| Computer |        170 |
+| Maths    |        270 |
+| Science  |         90 |
+| Social   |        120 |
++----------+------------+
+4 rows in set (0.01 sec)
+
+-------------------Displaying number of students in each country-------------------------------
+
+mysql> SELECT country,count(name) as No_Of_Students FROM sample1 GROUP BY country;
++-----------+----------------+
+| country   | No_Of_Students |
++-----------+----------------+
+| NULL      |              1 |
+| Australia |              1 |
+| India     |              5 |
+| UAE       |              1 |
+| US        |              1 |
++-----------+----------------+
+5 rows in set (0.00 sec)
+
+
+---------------Displaying names of all students where marks ranges between 70 and 100-----------------
+
+mysql> SELECT name FROM sample1 WHERE marks BETWEEN 70 AND 100;
++---------+
+| name    |
++---------+
+| Vinitha |
+| Arghyaa |
+| Mohan   |
+| Ram     |
+| Radha   |
+| Divya   |
++---------+
+6 rows in set (0.00 sec)
+
+
+---------------------Average marks in maths and computer -------------------
+
+mysql> SELECT subject,avg(marks) FROM sample1 where subject IN ("Maths","Computer") GROUP BY subject;
++----------+------------+
+| subject  | avg(marks) |
++----------+------------+
+| Computer |    56.6667 |
+| Maths    |    90.0000 |
++----------+------------+
+2 rows in set (0.00 sec)
+
+
+---------------------Displaying names of students starting by V and ending by a-------------------
+
+mysql> SELECT name FROM sample1 WHERE name LIKE "V%" AND name LIKE "%a";
++---------+
+| name    |
++---------+
+| Vinitha |
+| Vihaana |
++---------+
+2 rows in set (0.00 sec)
+
+---------------------Performing concatenation on name, gender and subject and ordering by sujbect-------------------
+
+
+mysql> SELECT CONCAT(name,"-",subject) AS name_subject FROM sample1 ORDER BY subject;
++------------------+
+| name_subject     |
++------------------+
+| Yoshida-Computer |
+| Radha-Computer   |
+| Vihaana-Computer |
+| Vinitha-Maths    |
+| Mohan-Maths      |
+| Divya-Maths      |
+| Arghyaa-Science  |
+| Roshan-Social    |
+| Ram-Social       |
++------------------+
+9 rows in set (0.00 sec
+
+---------------------------Displaying subject where avg marks scored by students is greater than or equal to 60------------------------
+
+
+mysql> SELECT subject, AVG(marks) AS AVG_MARKS FROM sample1 group by subject HAVING AVG_MARKS >= 60;
++---------+-----------+
+| subject | AVG_MARKS |
++---------+-----------+
+| Maths   |   90.0000 |
+| Science |   90.0000 |
+| Social  |   60.0000 |
++---------+-----------+
+3 rows in set (0.00 sec)
