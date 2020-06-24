@@ -1,0 +1,186 @@
+vinitha.muralidharan
+11781388
+
+mysql> CREATE TABLE emp(empid INT, ename CHAR(1), date1 DATE, in_time TIME, out_time TIME);
+Query OK, 0 rows affected (0.56 sec)
+
+mysql> INSERT INTO emp(empid,ename,date1,in_time,out_time) VALUES (101,'A','20200601','09:00:00','15:00:00');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> INSERT INTO emp(empid,ename,date1,in_time,out_time) VALUES (101,'A','20200601','15:15:00','16:25:00');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO emp(empid,ename,date1,in_time,out_time) VALUES (102,'B','20200601','15:00:00','19:00:00');
+Query OK, 1 row affected (0.08 sec)
+
+mysql> INSERT INTO emp(empid,ename,date1,in_time,out_time) VALUES (102,'B','20200601','20:30:00','21:15:00');
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO emp(empid,ename,date1,in_time,out_time) VALUES (103,'C','20200602','15:00:00','19:00:00');
+Query OK, 1 row affected (0.10 sec)
+
+mysql> SELECT * FROM emp;
++-------+-------+------------+----------+----------+
+| empid | ename | date1      | in_time  | out_time |
++-------+-------+------------+----------+----------+
+|   101 | A     | 2020-06-01 | 09:00:00 | 15:00:00 |
+|   101 | A     | 2020-06-01 | 15:15:00 | 16:25:00 |
+|   102 | B     | 2020-06-01 | 15:00:00 | 19:00:00 |
+|   102 | B     | 2020-06-01 | 20:30:00 | 21:15:00 |
+|   103 | C     | 2020-06-02 | 15:00:00 | 19:00:00 |
++-------+-------+------------+----------+----------+
+5 rows in set (0.01 sec)
+
+Questions:
+
+----------
+
+1.Find employee(s) who had most swipes for a given day
+
+mysql> SELECT ename,count(empid) as "Swipes" FROM emp group by ename order by Swipes DESC limit 1;
++-------+--------+
+| ename | Swipes |
++-------+--------+
+| A     |      2 |
++-------+--------+
+1 row in set (0.00 sec)
+
+
+2.Find time in office(login time) for each employee at each swipe
+
+mysql> SELECT ename,time(out_time-in_time) AS "Office Time" FROM emp;
++-------+-------------+
+| ename | Office Time |
++-------+-------------+
+| A     | 06:00:00    |
+| A     | 01:10:00    |
+| B     | 04:00:00    |
+| B     | NULL        |
+| C     | 04:00:00    |
++-------+-------------+
+5 rows in set, 1 warning (0.00 sec)
+
+3.Get break time each employee hadat each swipe
+
+mysql>  SELECT distinct e1.ename,time(e2.out_time - e1.in_time) AS "BREAK" FROM emp e1, emp e2 WHERE e1.date1 = e2.date1 and e1.ename=e2.ename;
++-------+-----------+
+| ename | BREAK     |
++-------+-----------+
+| A     | 06:00:00  |
+| A     | -00:15:00 |
+| A     | 07:25:00  |
+| A     | 01:10:00  |
+| B     | 04:00:00  |
+| B     | -01:30:00 |
+| B     | 06:15:00  |
+| B     | NULL      |
+| C     | 04:00:00  |
++-------+-----------+
+9 rows in set, 1 warning (0.00 sec)
+
+4.update the recent swipe with first swipe in_time details (if and only if more than one swipe exists per employee
+
+5.Find employee(s) who did not swipe atleast once for on a given day
+
+mysql> SELECT DISTINCT e1.ename FROM emp e1, emp e2 WHERE e1.ename != e2.ename and e1.date1 = e2.date1;
++-------+
+| ename |
++-------+
+| B     |
+| A     |
++-------+
+2 rows in set (0.00 sec)
+
+6.Get the AM/PM on recent swipe made by an employee using INSTR/SUBSTR function
+
+
+2. str= "'aaa, bb ccc'"
+
+use substr/instr functions to return "b c" as output
+
+mysql> select substr('aa, bb ccc',6,3);
++--------------------------+
+| substr('aa, bb ccc',6,3) |
++--------------------------+
+| b c                      |
++--------------------------+
+1 row in set (0.00 sec)
+
+ 
+
+3. With below table, convert to expected output shown
+
+ 
+
+eid        name           sal         month
+
+101         A             100         Jan
+
+101         A             200         Feb
+
+102         B             200         Jan
+
+102         B             300         Feb
+
+103         C             200         Jan
+
+103         C             200         Feb
+
+ 
+
+expected output:
+
+ 
+
+eid        name           jan         feb
+
+101         A             100         200
+
+102         B             200         300
+
+103         C             200         200
+
+104         D             100         300
+
+ 
+
+Questions:(based on output above)
+
+--------
+
+mysql> select DISTINCT e1.eid, e1.name, e1.sal as "jan", e2.sal as "feb" FROM emp1 e1, emp1 e2 WHERE e1.name=e2.name AND e2.sal=e1.sal;
++------+------+------+------+
+| eid  | name | jan  | feb  |
++------+------+------+------+
+|  101 | a    |  100 |  100 |
+|  101 | a    |  200 |  200 |
+|  102 | b    |  200 |  200 |
+|  102 | b    |  300 |  300 |
+|  103 | c    |  200 |  200 |
++------+------+------+------+
+5 rows in set (0.00 sec)
+
+1.find employee who did not have salary change
+
+mysql> select DISTINCT e1.eid, e1.name, e1.sal as "jan", e2.sal as "feb" FROM emp1 e1, emp1 e2 WHERE e1.name=e2.name AND e2.sal!=e1.sal;
++------+------+------+------+
+| eid  | name | jan  | feb  |
++------+------+------+------+
+|  101 | a    |  200 |  100 |
+|  101 | a    |  100 |  200 |
+|  102 | b    |  300 |  200 |
+|  102 | b    |  200 |  300 |
++------+------+------+------+
+4 rows in set (0.00 sec)
+
+2.Find employee who had maximum salary for a given month or have maximum salary difference amoung other employee.
+
+mysql> SELECT name,sal AS "MAximum salary" FROM emp1 where sal in (SELECT MAX(sal) FROM emp1);
++------+----------------+
+| name | MAximum salary |
++------+----------------+
+| b    |            300 |
++------+----------------+
+1 row in set (0.00 sec)
+
+If there is tie on maximum salary for given month, employee with maximum salary in upcoming month will be winner
