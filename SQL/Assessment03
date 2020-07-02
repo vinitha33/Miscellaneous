@@ -1,0 +1,131 @@
+mysql> CREATE TABLE PUBLISHER(Publish_ID VARCHAR(10) PRIMARY KEY, Publish_Name VARCHAR(30),Publish_City VARCHAR(10), Publish_Start_Date DATE, Branches INT);
+Query OK, 0 rows affected (1.71 sec)
+
+mysql> CREATE TABLE AUTHORS(Author_ID VARCHAR(10) PRIMARY KEY, Author_Name VARCHAR(30),Author_Country VARCHAR(10), Author_City VARCHAR(30),
+Publish_ID VARCHAR(10) REFERENCES Publisher(Publish_ID));
+Query OK, 0 rows affected (0.27 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('PB01','Jex Max Publication','Berlin','19290421',10);
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('PB02','Summer Night Publication','Canada','20190831',25);
+Query OK, 1 row affected (0.12 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('PB03','NOvel Publisher Ltd.','London','20180810',11);
+Query OK, 1 row affected (0.09 sec)
+
+mysql> INSERT INTO PUBLISHER VALUES('PB04','Mark Book Sales','New Jersy','20080524',9);
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT001','William Norton','UK','Cambridge','PB01');
+Query OK, 1 row affected (0.11 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT002','C. J. Wilde','USA','San Francisco','PB04');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT003','John Betjeman Hunter','RUSSIA','Moscow','PB01');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT004','John Betjeman Hunter','CANADA','Toronto','PB03');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT005','S.B.Swaminathan','INDIA','Delhi','PB01');
+Query OK, 1 row affected (0.04 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT006','Butler Andre','UK','London','PB03');
+Query OK, 1 row affected (0.07 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT007','E. Howard','EUROPE','Berlin','PB03');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT008','Andrew Jeff','GERMANY','Berlin','PB02');
+Query OK, 1 row affected (0.05 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT009','Drek Tailor','Australia','Melbourne','PB01');
+Query OK, 1 row affected (0.03 sec)
+
+mysql> INSERT INTO AUTHORS VALUES('AUT010','Mary Coffing','USA','New Jersy','PB04');
+Query OK, 1 row affected (0.05 sec)
+
+
+1. mysql> SELECT * FROM PUBLISHER p, AUTHORS a WHERE publish_city NOT IN (SELECT author_city FROM authors) AND a.publish_id=p.publish_id AND p.publish_city=a.author_city;
+mysql> SELECT * FROM PUBLISHER p, AUTHORS a WHERE publish_city NOT IN (SELECT author_city FROM authors) AND a.publish_id=p.publish_id;
+
+2. mysql> SELECT a.author_name,a.author_country,p.publish_city,p.publish_start_date,p.branches  FROM publisher p JOIN authors a ON a.publish_id=p.publish_id WHERE a.publish_id IN (SELECT publish_id FROM publisher WHERE branches IN (SELECT MAX(branches) FROM publisher));
++-------------+----------------+--------------+--------------------+----------+
+| author_name | author_country | publish_city | publish_start_date | branches |
++-------------+----------------+--------------+--------------------+----------+
+| Andrew Jeff | GERMANY        | Canada       | 2019-08-31         |       25 |
++-------------+----------------+--------------+--------------------+----------+
+1 row in set (0.04 sec)
+
+
+3. mysql> SELECT * FROM publisher p,authors a WHERE p.publish_id IN (SELECT a1.publish_id FROM authors a1, authors a2 WHERE a1.author_city=a2.author_city ) AND p.publish_city=a.author_country;
++------------+--------------------------+--------------+--------------------+----------+-----------+----------------------+----------------+-------------+------------+
+| Publish_ID | Publish_Name             | Publish_City | Publish_Start_Date | Branches | Author_ID | Author_Name          | Author_Country | Author_City | Publish_ID |
++------------+--------------------------+--------------+--------------------+----------+-----------+----------------------+----------------+-------------+------------+
+| PB02       | Summer Night Publication | Canada       | 2019-08-31         |       25 | AUT004    | John Betjeman Hunter | CANADA         | Toronto     | PB03       |
++------------+--------------------------+--------------+--------------------+----------+-----------+----------------------+----------------+-------------+------------+
+1 row in set (0.00 sec)
+
+
+
+5.mysql> SELECT author_name FROM authors a, publisher p WHERE a.publish_id = p.publish_id AND p.publish_city NOT IN (SELECT author_country from authors);
++----------------------+
+| author_name          |
++----------------------+
+| William Norton       |
+| John Betjeman Hunter |
+| S.B.Swaminathan      |
+| Drek Tailor          |
+| John Betjeman Hunter |
+| Butler Andre         |
+| E. Howard            |
+| C. J. Wilde          |
+| Mary Coffing         |
++----------------------+
+9 rows in set (0.00 sec)
+
+6. mysql> SELECT * FROM authors a,publisher p WHERE SUBSTRING(a.author_name,1,1)=SUBSTRING(p.publish_name,1,1) AND a.publish_id=p.publish_id;
++-----------+----------------------+----------------+-------------+------------+------------+---------------------+--------------+--------------------+----------+
+| Author_ID | Author_Name          | Author_Country | Author_City | Publish_ID | Publish_ID | Publish_Name        | Publish_City | Publish_Start_Date | Branches |
++-----------+----------------------+----------------+-------------+------------+------------+---------------------+--------------+--------------------+----------+
+| AUT003    | John Betjeman Hunter | RUSSIA         | Moscow      | PB01       | PB01       | Jex Max Publication | Berlin       | 1929-04-21         |       10 |
+| AUT010    | Mary Coffing         | USA            | New Jersy   | PB04       | PB04       | Mark Book Sales     | New Jersy    | 2008-05-24         |        9 |
++-----------+----------------------+----------------+-------------+------------+------------+---------------------+--------------+--------------------+----------+
+2 rows in set (0.03 sec)
+
+
+7. mysql> SELECT * FROM authors WHERE author_name LIKE ('%.%.%');
++-----------+-----------------+----------------+---------------+------------+
+| Author_ID | Author_Name     | Author_Country | Author_City   | Publish_ID |
++-----------+-----------------+----------------+---------------+------------+
+| AUT002    | C. J. Wilde     | USA            | San Francisco | PB04       |
+| AUT005    | S.B.Swaminathan | INDIA          | Delhi         | PB01       |
++-----------+-----------------+----------------+---------------+------------+
+2 rows in set (0.00 sec)
+
+8. mysql> SELECT * FROM authors WHERE author_name NOT LIKE ('%.%.%') AND author_name NOT LIKE ('%.%');
++-----------+----------------------+----------------+-------------+------------+
+| Author_ID | Author_Name          | Author_Country | Author_City | Publish_ID |
++-----------+----------------------+----------------+-------------+------------+
+| AUT001    | William Norton       | UK             | Cambridge   | PB01       |
+| AUT003    | John Betjeman Hunter | RUSSIA         | Moscow      | PB01       |
+| AUT004    | John Betjeman Hunter | CANADA         | Toronto     | PB03       |
+| AUT006    | Butler Andre         | UK             | London      | PB03       |
+| AUT008    | Andrew Jeff          | GERMANY        | Berlin      | PB02       |
+| AUT009    | Drek Tailor          | Australia      | Melbourne   | PB01       |
+| AUT010    | Mary Coffing         | USA            | New Jersy   | PB04       |
++-----------+----------------------+----------------+-------------+------------+
+7 rows in set (0.00 sec)
+
+10. mysql> SELECT a.*,p.* FROM authors a, publisher p WHERE a.publish_id=p.publish_id AND p.publish_start_date IN (SELECT MAX(publish_start_date) FROM publisher);
++-----------+-------------+----------------+-------------+------------+------------+--------------------------+--------------+--------------------+----------+
+| Author_ID | Author_Name | Author_Country | Author_City | Publish_ID | Publish_ID | Publish_Name             | Publish_City | Publish_Start_Date | Branches |
++-----------+-------------+----------------+-------------+------------+------------+--------------------------+--------------+--------------------+----------+
+| AUT008    | Andrew Jeff | GERMANY        | Berlin      | PB02       | PB02       | Summer Night Publication | Canada       | 2019-08-31         |       25 |
++-----------+-------------+----------------+-------------+------------+------------+--------------------------+--------------+--------------------+----------+
+1 row in set (0.32 sec)
+
+
+
