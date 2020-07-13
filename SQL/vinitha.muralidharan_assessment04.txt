@@ -1,0 +1,290 @@
+VINITHA MURALIDHARAN vinitha.muralidharan 11781388
+
+CREATE DATABASE assessment04;
+USE assessment04;
+
+
+CREATE table department(Dept_id INT PRIMARY KEY, Dept_Name VARCHAR(10));
+INSERT INTO department(Dept_id, Dept_Name) VALUES (1,'IT');
+INSERT INTO department(Dept_id, Dept_Name) VALUES (2,'Admin');
+INSERT INTO department(Dept_id, Dept_Name) VALUES (4,'HR');
+
+
+CREATE TABLE employee(Emp_id INT, Emp_Name VARCHAR(10), Emp_Sal INT, Dept_id INT REFERENCES department(dept_id));
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (10,'Vivek',2000,1);
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (20,'Raj',3000,1);
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (30,'Vinoth',4000,1);
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (40,'Abhishek',5000,2);
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (50,'Divya',6000,2);
+INSERT INTO Employee(Emp_id,Emp_Name,Emp_Sal,Dept_id) VALUES (60,'Chitra',7000,3);
+
+
+SELECT * FROM Department;
++---------+-----------+
+| Dept_id | Dept_Name |
++---------+-----------+
+|       1 | IT        |
+|       2 | Admin     |
+|       4 | HR        |
++---------+-----------+
+
+
+SELECT * FROM Employee;
++--------+----------+---------+---------+
+| Emp_id | Emp_Name | Emp_Sal | Dept_id |
++--------+----------+---------+---------+
+|     10 | Vivek    |    2000 |       1 |
+|     20 | Raj      |    3000 |       1 |
+|     30 | Vinoth   |    4000 |       1 |
+|     40 | Abhishek |    5000 |       2 |
+|     50 | Divya    |    6000 |       2 |
+|     60 | Chitra   |    7000 |       3 |
++--------+----------+---------+---------+
+
+
+
+1. 	 SELECT d.Dept_id,d.Dept_Name,
+     CASE WHEN e.Dept_id IS NULL THEN 0
+     ELSE SUM(e.Emp_Sal)
+     END
+     AS Sum_Emp_SAL
+     FROM Department d LEFT JOIN Employee e ON d.Dept_id=e.Dept_id
+     GROUP BY d.Dept_id;
++---------+-----------+-------------+
+| Dept_id | Dept_Name | Sum_Emp_SAL |
++---------+-----------+-------------+
+|       1 | IT        |        9000 |
+|       2 | Admin     |       11000 |
+|       4 | HR        |           0 |
++---------+-----------+-------------+
+3 rows in set (0.00 sec)
+
+
+
+2. SELECT e.Dept_id, CASE WHEN d.Dept_id IS NULL THEN 'Others' ELSE d.Dept_Name END AS Dept_Name,SUM(Emp_sal) Sum_Emp_SAL FROM Employee e LEFT JOIN Department d ON e.Dept_id=D.Dept_id GROUP BY d.Dept_id;
++---------+-----------+-------------+
+| Dept_id | Dept_Name | Sum_Emp_SAL |
++---------+-----------+-------------+
+|       1 | IT        |        9000 |
+|       2 | Admin     |       11000 |
+|       3 | Others    |        7000 |
++---------+-----------+-------------+
+3 rows in set (0.00 sec)
+
+
+
+CREATE TABLE Employee1(Emp_id INT,Emp_Name VARCHAR(10),Manager_id INT,Salary INT);
+INSERT INTO Employee1 VALUES(1,'Vivek',8,11000);
+INSERT INTO Employee1 VALUES(2,'Raj',1,2000);
+INSERT INTO Employee1 VALUES(3,'Vinoth',1,3000);
+INSERT INTO Employee1 VALUES(4,'Abhishek',2,5000);
+INSERT INTO Employee1 VALUES(5,'Divya',3,6000);
+INSERT INTO Employee1 VALUES(6,'Chitra',3,2350);
+INSERT INTO Employee1 VALUES(7,'Devi',3,250);
+INSERT INTO Employee1 VALUES(8,'Aarthi',4,2700);
+SELECT * FROM Employee1;
++--------+----------+------------+--------+
+| Emp_id | Emp_Name | Manager_id | Salary |
++--------+----------+------------+--------+
+|      1 | Vivek    |          8 |  11000 |
+|      2 | Raj      |          1 |   2000 |
+|      3 | Vinoth   |          1 |   3000 |
+|      4 | Abhishek |          2 |   5000 |
+|      5 | Divya    |          3 |   6000 |
+|      6 | Chitra   |          3 |   2350 |
+|      7 | Devi     |          3 |    250 |
+|      8 | Aarthi   |          4 |   2700 |
++--------+----------+------------+--------+
+
+
+
+3. SELECT Emp_id,Emp_Name,Manager_id,Salary FROM Employee1 WHERE Salary>=2700 AND Salary<=10000;
++--------+----------+------------+--------+
+| Emp_id | Emp_Name | Manager_id | Salary |
++--------+----------+------------+--------+
+|      3 | Vinoth   |          1 |   3000 |
+|      4 | Abhishek |          2 |   5000 |
+|      5 | Divya    |          3 |   6000 |
+|      8 | Aarthi   |          4 |   2700 |
++--------+----------+------------+--------+
+
+
+
+4.  SELECT e.Manager_id,m.Emp_Name AS manager_name,SUM(e.Salary) AS Sum_Emp_SAL FROM Employee1 e JOIN Employee1 m ON e.Manager_id=m.Emp_id GROUP BY e.Manager_id;
++------------+--------------+-------------+
+| Manager_id | manager_name | Sum_Emp_SAL |
++------------+--------------+-------------+
+|          1 | Vivek        |        5000 |
+|          2 | Raj          |        5000 |
+|          3 | Vinoth       |       10850 |
+|          4 | Abhishek     |        2700 |
+|          8 | Aarthi       |       11000 |
++------------+--------------+-------------+
+
+
+
+
+
+CREATE TABLE Employee2(Emp_ID INT, Emp_Name VARCHAR(20));
+INSERT INTO Employee2 VALUES(1,'RajeshKumar');
+INSERT INTO Employee2 VALUES(2,'UdhayaRaja');
+INSERT INTO Employee2 VALUES(3,'Abhishek');
+INSERT INTO Employee2 VALUES(4,'MukeshKumar');
+INSERT INTO Employee2 VALUES(5,'VijayaprakashSingh');
+INSERT INTO Employee2 VALUES(6,'Divyashree');
+SELECT * FROM Employee2;
++--------+--------------------+
+| Emp_ID | Emp_Name           |
++--------+--------------------+
+|      1 | RajeshKumar        |
+|      2 | UdhayaRaja         |
+|      3 | Abhishek           |
+|      4 | MukeshKumar        |
+|      5 | VijayaprakashSingh |
+|      6 | Divyashree         |
++--------+--------------------+
+
+
+
+
+5. SELECT Emp_ID,SUBSTR(Emp_Name,4) Emp_Name FROM Employee2;
++--------+-----------------+
+| Emp_ID | Emp_Name        |
++--------+-----------------+
+|      1 | eshKumar        |
+|      2 | ayaRaja         |
+|      3 | ishek           |
+|      4 | eshKumar        |
+|      5 | ayaprakashSingh |
+|      6 | yashree         |
++--------+-----------------+
+
+
+
+6. SELECT Emp_ID,SUBSTR(Emp_Name,INSTR(Emp_Name,'h')+1) FROM Employee2;
++--------+----------------------------------------+
+| Emp_ID | SUBSTR(Emp_Name,INSTR(Emp_Name,'h')+1) |
++--------+----------------------------------------+
+|      1 | Kumar                                  |
+|      2 | ayaRaja                                |
+|      3 | ishek                                  |
+|      4 | Kumar                                  |
+|      5 | Singh                                  |
+|      6 | ree                                    |
++--------+----------------------------------------+
+
+
+
+
+SELECT * FROM EMployee1;
++--------+----------+------------+--------+
+| Emp_id | Emp_Name | Manager_id | Salary |
++--------+----------+------------+--------+
+|      1 | Vivek    |          8 |  11000 |
+|      2 | Raj      |          1 |   2000 |
+|      3 | Vinoth   |          1 |   3000 |
+|      4 | Abhishek |          2 |   5000 |
+|      5 | Divya    |          3 |   6000 |
+|      6 | Chitra   |          3 |   2350 |
+|      7 | Devi     |          3 |   2500 |
+|      8 | Aarthi   |          4 |   2700 |
++--------+----------+------------+--------+
+
+
+
+7. SELECT Emp_id,Emp_Name,MAX(Salary) Salary FROM Employee1 WHERE Salary<(SELECT MAX(Salary) FROM Employee1);
++--------+----------+--------+
+| Emp_id | Emp_Name | Salary |
++--------+----------+--------+
+|      2 | Raj      |   6000 |
++--------+----------+--------+
+
+
+
+8. SELECT Emp_id,Emp_Name,Salary FROM employee1 ORDER BY Salary DESC LIMIT 3;
++--------+----------+--------+
+| Emp_id | Emp_Name | Salary |
++--------+----------+--------+
+|      1 | Vivek    |  11000 |
+|      5 | Divya    |   6000 |
+|      4 | Abhishek |   5000 |
++--------+----------+--------+
+
+
+
+
+
+CREATE TABLE employee3(Emp_id INT, Emp_Name VARCHAR(20),Dept_Name VARCHAR(10), Salary INT);
+INSERT INTO employee3 VALUES(1,'Vivek','IT',2000);
+INSERT INTO employee3 VALUES(2,'Raj','Admin',3500);
+INSERT INTO employee3 VALUES(3,'Vinoth','HR',4800);
+INSERT INTO employee3 VALUES(4,'Abhishek','IT',5700);
+INSERT INTO employee3 VALUES(5,'Divya','ITES',3000);
+INSERT INTO employee3 VALUES(6,'Chitra','HR',5800);
+INSERT INTO employee3 VALUES(7,'Devi','Admin',3200);
+
+
+SELECT * FROM employee3;
++--------+----------+-----------+--------+
+| Emp_id | Emp_Name | Dept_Name | Salary |
++--------+----------+-----------+--------+
+|      1 | Vivek    | IT        |   2000 |
+|      2 | Raj      | Admin     |   3500 |
+|      3 | Vinoth   | HR        |   4800 |
+|      4 | Abhishek | IT        |   5700 |
+|      5 | Divya    | ITES      |   3000 |
+|      6 | Chitra   | HR        |   5800 |
+|      7 | Devi     | Admin     |   3200 |
++--------+----------+-----------+--------+
+
+
+9. SELECT Emp_id,Emp_Name,Dept_Name,Salary FROM employee3 WHERE (Dept_Name='IT' AND Salary>3000) OR (Dept_Name='Admin' AND Salary>3400) ORDER BY Salary DESC;
++--------+----------+-----------+--------+
+| Emp_id | Emp_Name | Dept_Name | Salary |
++--------+----------+-----------+--------+
+|      4 | Abhishek | IT        |   5700 |
+|      2 | Raj      | Admin     |   3500 |
++--------+----------+-----------+--------+
+
+
+
+
+CREATE TABLE employee4(Emp_id INT, Emp_Name VARCHAR(20),Dept_Name VARCHAR(10), Salary INT);
+INSERT INTO employee4 VALUES(1,'Rajesh','IT',2000);
+INSERT INTO employee4 VALUES(2,'Ajaykumar','Admin',3500);
+INSERT INTO employee4 VALUES(3,'Abhishek','HR',4800);
+INSERT INTO employee4 VALUES(4,'Vivekkumar','IT',5700);
+INSERT INTO employee4 VALUES(5,'Balaji','ITES',3000);
+INSERT INTO employee4 VALUES(6,'Raveendar','HR',5800);
+INSERT INTO employee4 VALUES(7,'Poornarao','Admin',3200);
+
+
+10. SELECT Emp_id,Emp_Name,Dept_Name,Salary FROM employee4 WHERE Emp_Name LIKE '%j%';
++--------+-----------+-----------+--------+
+| Emp_id | Emp_Name  | Dept_Name | Salary |
++--------+-----------+-----------+--------+
+|      1 | Rajesh    | IT        |   2000 |
+|      2 | Ajaykumar | Admin     |   3500 |
+|      5 | Balaji    | ITES      |   3000 |
++--------+-----------+-----------+--------+
+
+
+11. SELECT Emp_Id,Emp_Name,Dept_Name,Salary FROM employee4 WHERE Emp_Name LIKE '%j%' OR Emp_Name LIKE '%n%' OR Emp_Name LIKE '%m%';
++--------+------------+-----------+--------+
+| Emp_Id | Emp_Name   | Dept_Name | Salary |
++--------+------------+-----------+--------+
+|      1 | Rajesh     | IT        |   2000 |
+|      2 | Ajaykumar  | Admin     |   3500 |
+|      4 | Vivekkumar | IT        |   5700 |
+|      5 | Balaji     | ITES      |   3000 |
+|      6 | Raveendar  | HR        |   5800 |
+|      7 | Poornarao  | Admin     |   3200 |
++--------+------------+-----------+--------+
+
+
+12. SELECT Emp_id,Emp_Name,Dept_Name,Salary FROM employee4 WHERE Emp_Name LIKE '%b%' AND Emp_Name LIKE '%h%' AND Emp_Name LIKE '%e%';
++--------+----------+-----------+--------+
+| Emp_id | Emp_Name | Dept_Name | Salary |
++--------+----------+-----------+--------+
+|      3 | Abhishek | HR        |   4800 |
++--------+----------+-----------+--------+

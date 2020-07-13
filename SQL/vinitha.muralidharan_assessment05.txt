@@ -1,0 +1,290 @@
+VINITHA MURALIDHARAN vinitha.muralidharan 11781388
+
+CREATE TABLE Project(proj_id INT PRIMARY KEY,proj_name VARCHAR(10));
+CREATE TABLE Place(place_id INT PRIMARY KEY,place_desc VARCHAR(10),place_typ VARCHAR(10));
+CREATE TABLE Designation(desc_id int primary key,desc_name VARCHAR(10),role_type VARCHAR(10));
+CREATE TABLE employee(emp_id INT primary key, emp_name VARCHAR(10),desc_id int references designation(desc_id),place_id int references place(place_id),proj_id int references project(proj_id));
+insert into designation values(10,'ase','developer');
+insert into designation values(20,'se','developer');
+insert into designation values(30,'sse','developer');
+insert into designation values(40,'tl','lead');
+insert into designation values(50,'am','lead');
+nsert into designation values(100,'sm','manager');
+
+SELECT * FROM designation;
+
++---------+-----------+-----------+
+| desc_id | desc_name | role_type |
++---------+-----------+-----------+
+|      10 | ase       | developer |
+|      20 | se        | developer |
+|      30 | sse       | developer |
+|      40 | tl        | lead      |
+|      50 | am        | lead      |
+|     100 | sm        | manager   |
++---------+-----------+-----------+
+6 rows in set (0.00 sec)
+
+
+insert into project values(2,'asg');
+insert into project values(3,'pepsi');
+insert into project values(4,'microsoft');
+insert into project values(5,'amazon');
+insert into project values(10,'flipkart');
+select * from project;
++---------+-----------+
+| proj_id | proj_name |
++---------+-----------+
+|       2 | asg       |
+|       3 | pepsi     |
+|       4 | microsoft |
+|       5 | amazon    |
+|      10 | flipkart  |
++---------+-----------+
+5 rows in set (0.00 sec)
+
+
+insert into place values(2,'bangalore','offshore');
+insert into place values(3,'hyderabad','offshore');
+insert into place values(4,'mexico','nearshore');
+insert into place values(5,'newyork','onshore');
+select * from place;
++----------+------------+-----------+
+| place_id | place_desc | place_typ |
++----------+------------+-----------+
+|        1 | chennai    | offshore  |
+|        2 | bangalore  | offshore  |
+|        3 | hyderabad  | offshore  |
+|        4 | mexico     | nearshore |
+|        5 | newyork    | onshore   |
++----------+------------+-----------+
+5 rows in set (0.00 sec)
+
+
+insert into employee values(1,'Vijaykumar',10,1,3);
+insert into employee values(2,'Raja',20,3,4);
+insert into employee values(3,'AbhishekSingh',10,4,5);
+insert into employee values(4,'Santosh',30,2,1);
+insert into employee values(5,'Kribakaran',20,3,2);
+insert into employee values(6,'Divya',40,5,3);
+insert into employee values(7,'Suganya',10,3,4);
+insert into employee values(8,'Shalini',20,2,2);
+insert into employee values(9,'Avantika',30,1,5);
+insert into employee values(10,'Ajay',50,6,8);
+insert into employee values(11,'Tamilselvan',60,7,6);
+insert into employee values(12,'Vinodha',70,6,7);
+insert into employee values(13,'Karthick',60,5,2);
+insert into employee values(14,'sanjay',70,6,5);
+insert into employee values(15,'Meera',60,8,7);
+
+
+SELECT * FROM employee;
++--------+---------------+---------+----------+---------+
+| Emp_id | Emp_name      | Desc_id | Place_id | Proj_id |
++--------+---------------+---------+----------+---------+
+|      1 | Vijaykumar    |      10 |        1 |       3 |
+|      2 | Raja          |      20 |        3 |       4 |
+|      3 | AbhishekSingh |      10 |        4 |       5 |
+|      4 | Santosh       |      30 |        2 |       1 |
+|      5 | Kribakaran    |      20 |        3 |       2 |
+|      6 | Divya         |      40 |        5 |       3 |
+|      7 | Suganya       |      10 |        3 |       4 |
+|      8 | Shalini       |      20 |        2 |       2 |
+|      9 | Avantika      |      30 |        1 |       5 |
+|     10 | Ajay          |      50 |        6 |       8 |
+|     11 | Tamilselvan   |      60 |        7 |       6 |
+|     12 | Vinodha       |      70 |        6 |       7 |
+|     13 | Karthick      |      60 |        5 |       2 |
+|     14 | sanjay        |      70 |        6 |       5 |
+|     15 | Meera         |      60 |        8 |       7 |
++--------+---------------+---------+----------+---------+
+15 rows in set (0.00 sec)
+
+
+
+1. SELECT e.Emp_id,e.Emp_Name, CASE WHEN d.Desc_name IS NULL THEN "UNKNOWN DESIGNATION" WHEN d.Desc_name IS NOT NULL AND d.role_type = "LEAD" THEN "TEAM LEAD" ELSE d.Desc_Name END AS desc_name, CASE WHEN p.place_desc IS NULL THEN "OTHERS" WHEN p.place_desc IS NOT NULL AND p.place_desc = "Newyork" THEN "USA" ELSE p.place_desc END AS place_desc, CASE WHEN pr.proj_name IS NULL THEN "UNKNOWN PROJECT" ELSE pr.proj_name END AS proj_name FROM employee e LEFT JOIN designation d ON e.Desc_id=d.desc_id LEFT JOIN place p ON e.place_id=p.place_id LEFT JOIN project pr ON e.proj_id=pr.proj_id ORDER BY emp_id;
++--------+---------------+---------------------+------------+-----------------+
+| Emp_id | Emp_Name      | desc_name           | place_desc | proj_name       |
++--------+---------------+---------------------+------------+-----------------+
+|      1 | Vijaykumar    | ase                 | Chennai    | pepsi           |
+|      2 | Raja          | se                  | hyderabad  | microsoft       |
+|      3 | AbhishekSingh | ase                 | mexico     | amazon          |
+|      4 | Santosh       | sse                 | bangalore  | UNKNOWN PROJECT |
+|      5 | Kribakaran    | se                  | hyderabad  | asg             |
+|      6 | Divya         | TEAM LEAD           | USA        | pepsi           |
+|      7 | Suganya       | ase                 | hyderabad  | microsoft       |
+|      8 | Shalini       | se                  | bangalore  | asg             |
+|      9 | Avantika      | sse                 | Chennai    | amazon          |
+|     10 | Ajay          | TEAM LEAD           | OTHERS     | UNKNOWN PROJECT |
+|     11 | Tamilselvan   | UNKNOWN DESIGNATION | OTHERS     | UNKNOWN PROJECT |
+|     12 | Vinodha       | UNKNOWN DESIGNATION | OTHERS     | UNKNOWN PROJECT |
+|     13 | Karthick      | UNKNOWN DESIGNATION | USA        | asg             |
+|     14 | sanjay        | UNKNOWN DESIGNATION | OTHERS     | amazon          |
+|     15 | Meera         | UNKNOWN DESIGNATION | OTHERS     | UNKNOWN PROJECT |
++--------+---------------+---------------------+------------+-----------------+
+15 rows in set (0.00 sec)
+
+
+2. select e.emp_id,e.emp_name, case when d.role_type='DEVELOPER' and p.place_typ='Offshore' then 'TEAMMEMBER' when d.role_type='DEVELOPER' and p.place_typ='Nearshore' then 'TEAMLEAD' when d.role_type='DEVELOPER' and p.place_typ='Onshore' then 'BA' when d.role_type='LEAD' and p.place_typ='Onshore' then 'SCRUMMASTER' when d.role_type is not null or p.place_typ is not null then 'CONTRACTER' else 'SHADOW' end as Proj_role from employee e left join designation d on d.desc_id=e.desc_id left join place p on p.place_id=e.place_id;
++--------+---------------+-------------+
+| emp_id | emp_name      | Proj_role   |
++--------+---------------+-------------+
+|      1 | Vijaykumar    | CONTRACTER  |
+|      2 | Raja          | TEAMMEMBER  |
+|      3 | AbhishekSingh | TEAMLEAD    |
+|      4 | Santosh       | TEAMMEMBER  |
+|      5 | Kribakaran    | TEAMMEMBER  |
+|      6 | Divya         | SCRUMMASTER |
+|      7 | Suganya       | TEAMMEMBER  |
+|      8 | Shalini       | TEAMMEMBER  |
+|      9 | Avantika      | CONTRACTER  |
+|     10 | Ajay          | CONTRACTER  |
+|     11 | Tamilselvan   | SHADOW      |
+|     12 | Vinodha       | SHADOW      |
+|     13 | Karthick      | CONTRACTER  |
+|     14 | sanjay        | SHADOW      |
+|     15 | Meera         | SHADOW      |
++--------+---------------+-------------+
+15 rows in set (0.00 sec)
+
+4. SELECT CASE WHEN emp_name IS NULL THEN "OTHER" ELSE emp_name END AS emp_name,CASE WHEN desc_name IS NULL THEN "OTHER" ELSE desc_name END AS desc_name,CASE WHEN place_desc IS NULL THEN "OTHER" ELSE place_desc END AS place_desc,CASE WHEN proj_name IS NULL THEN "OTHER" ELSE proj_name END AS proj_name FROM employee e LEFT JOIN designation d ON e.Desc_id=d.desc_id LEFT JOIN place p ON e.place_id=p.place_id LEFT JOIN project pr ON e.proj_id=pr.proj_id ORDER BY emp_id;
++---------------+-----------+------------+-----------+
+| emp_name      | desc_name | place_desc | proj_name |
++---------------+-----------+------------+-----------+
+| Vijaykumar    | ase       | Chennai    | pepsi     |
+| Raja          | se        | hyderabad  | microsoft |
+| AbhishekSingh | ase       | mexico     | amazon    |
+| Santosh       | sse       | bangalore  | OTHER     |
+| Kribakaran    | se        | hyderabad  | asg       |
+| Divya         | tl        | newyork    | pepsi     |
+| Suganya       | ase       | hyderabad  | microsoft |
+| Shalini       | se        | bangalore  | asg       |
+| Avantika      | sse       | Chennai    | amazon    |
+| Ajay          | am        | OTHER      | OTHER     |
+| Tamilselvan   | OTHER     | OTHER      | OTHER     |
+| Vinodha       | OTHER     | OTHER      | OTHER     |
+| Karthick      | OTHER     | newyork    | asg       |
+| sanjay        | OTHER     | OTHER      | amazon    |
+| Meera         | OTHER     | OTHER      | OTHER     |
++---------------+-----------+------------+-----------+
+15 rows in set (0.00 sec)
+
+
+CREATE TABLE customer(customer_id INT,cust_name VARCHAR(20));
+
+INSERT INTO customer values(10,"JamesMartin");
+INSERT INTO customer values(20,"RickyAdams");
+INSERT INTO customer values(30,"Ramanujam");
+INSERT INTO customer values(40,"JyothiMahalingam");
+INSERT INTO customer values(50,"AmaranJothi");
+INSERT INTO customer values(60,"AkilanBala");
+INSERT INTO customer values(70,"ArunKumar");
+INSERT INTO customer values(80,"Dineshkumar");
+
+SELECT * FROM customer;
++-------------+------------------+
+| customer_id | cust_name        |
++-------------+------------------+
+|          10 | JamesMartin      |
+|          20 | RickyAdams       |
+|          30 | Ramanujam        |
+|          40 | JyothiMahalingam |
+|          50 | AmaranJothi      |
+|          60 | AkilanBala       |
+|          70 | ArunKumar        |
+|          80 | Dineshkumar      |
++-------------+------------------+
+
+
+CREATE TABLE customer1(customer_id INT,cust_name VARCHAR(10),city VARCHAR(20),priority_num INT,salesman_id INT,purchased_amount INT);
+INSERT INTO customer1 VALUES(10,'James','Chennai',1,1,10000);
+INSERT INTO customer1 VALUES(20,'Ricky','Chennai',1,3,8000);
+INSERT INTO customer1 VALUES(30,'Ramu','Bangalore',1,2,8000);
+INSERT INTO customer1 VALUES(40,'Jyothi','Hyderabad',2,3,9000);
+INSERT INTO customer1 VALUES(50,'Amaran','Chennai',1,4,3000);
+INSERT INTO customer1 VALUES(60,'Akilan','Hyderabad',2,3,6000);
+INSERT INTO customer1 VALUES(70,'Arun','Chennai',2,5,5000);
+INSERT INTO customer1 VALUES(80,'Dinesh','Mumbai',2,4,6000);
+
+
+SELECT * FROM customer1;
++-------------+-----------+-----------+--------------+-------------+------------------+
+| customer_id | cust_name | city      | priority_num | salesman_id | purchased_amount |
++-------------+-----------+-----------+--------------+-------------+------------------+
+|          10 | James     | Chennai   |            1 |           1 |            10000 |
+|          20 | Ricky     | Chennai   |            1 |           3 |             8000 |
+|          30 | Ramu      | Bangalore |            1 |           2 |             8000 |
+|          40 | Jyothi    | Hyderabad |            2 |           3 |             9000 |
+|          50 | Amaran    | Chennai   |            1 |           4 |             3000 |
+|          60 | Akilan    | Hyderabad |            2 |           3 |             6000 |
+|          70 | Arun      | Chennai   |            2 |           5 |             5000 |
+|          80 | Dinesh    | Mumbai    |            2 |           4 |             6000 |
++-------------+-----------+-----------+--------------+-------------+------------------+
+
+
+CREATE TABLE salesman(salesman_id INT,salesman_name VARCHAR(20),City VARCHAR(10),sales_manager_id INT, Monthly_target INT);
+INSERT INTO salesman VALUES(1,'John','Chennai',2,10000);
+INSERT INTO salesman VALUES(2,'Abraham','Bangalore',4,21000);
+INSERT INTO salesman VALUES(3,'Raju','Hyderabad',4,21000);
+INSERT INTO salesman VALUES(4,'Srinath','Mumbai',5,9000);
+INSERT INTO salesman VALUES(5,'Vinay','Chennai',6,4000);
+INSERT INTO salesman VALUES(6,'Balaji','Hyderabad',6,15000);
+
+5. SELECT salesman_name,cust_name,c.city AS customer_city, s.city AS salesman_city FROM customer1 c, salesman s WHERE s.salesman_id=c.salesman_id AND s.city <> c.city;
++---------------+-----------+---------------+---------------+
+| salesman_name | cust_name | customer_city | salesman_city |
++---------------+-----------+---------------+---------------+
+| Raju          | Ricky     | Chennai       | Hyderabad     |
+| Srinath       | Amaran    | Chennai       | Mumbai        |
++---------------+-----------+---------------+---------------+
+
+
+6. SELECT s.salesman_name,s.city,s.monthly_target,SUM(c.purchased_amount) as Amount_purchase_by_customer FROM customer1 c, salesman s WHERE c.salesman_id=s.salesman_id GROUP BY s.salesman_id HAVING Amount_purchase_by_customer>=monthly_target;
++---------------+-----------+----------------+-----------------------------+
+| salesman_name | city      | monthly_target | Amount_purchase_by_customer |
++---------------+-----------+----------------+-----------------------------+
+| John          | Chennai   |          10000 |                       10000 |
+| Raju          | Hyderabad |          21000 |                       23000 |
+| Srinath       | Mumbai    |           9000 |                        9000 |
+| Vinay         | Chennai   |           4000 |                        5000 |
++---------------+-----------+----------------+-----------------------------+
+
+7. SELECT * FROM salesman;
++-------------+---------------+-----------+------------------+----------------+
+| salesman_id | salesman_name | City      | sales_manager_id | Monthly_target |
++-------------+---------------+-----------+------------------+----------------+
+|           1 | John          | Chennai   |                2 |          10000 |
+|           2 | Abraham       | Bangalore |                4 |          21000 |
+|           3 | Raju          | Hyderabad |                4 |          21000 |
+|           4 | Srinath       | Mumbai    |                5 |           9000 |
+|           5 | Vinay         | Chennai   |                6 |           4000 |
+|           6 | Balaji        | Hyderabad |                6 |          15000 |
++-------------+---------------+-----------+------------------+----------------+
+
+
+13. SELECT SUBSTR(cust_name,3,LENGTH(cust_name)-4) from customer;
++-----------------------------------------+
+| SUBSTR(cust_name,3,LENGTH(cust_name)-4) |
++-----------------------------------------+
+| mesMart                                 |
+| ckyAda                                  |
+| manuj                                   |
+| othiMahaling                            |
+| aranJot                                 |
+| ilanBa                                  |
+| unKum                                   |
+| neshkum                                 |
++-----------------------------------------+
+
+
+14. 
+
+15. SELECT cust_name FROM customer WHERE cust_name LIKE '%A%' AND cust_name LIKE '%U%' AND cust_name LIKE '%R%';
++-------------+
+| cust_name   |
++-------------+
+| Ramanujam   |
+| ArunKumar   |
+| Dineshkumar |
++-------------+
+3 rows in set (0.00 sec)

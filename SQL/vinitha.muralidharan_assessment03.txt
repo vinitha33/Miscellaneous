@@ -1,0 +1,80 @@
+CREATE DATABASE assessment03;
+USE assessment03;
+CREATE TABLE station(Station_ID INT PRIMARY KEY, City VARCHAR(20),State VARCHAR(10),LAT_IN INT,LONG_W INT);
+INSERT INTO station VALUES(13,'Phoenix','AZ',33,112);
+INSERT INTO station VALUES(44,'Denver','CO',40,105);
+INSERT INTO station VALUES(66,'Caribou','ME',47,68);
+
+CREATE TABLE stats(Stats_ID INT REFERENCES station(Station_ID), Month INT, YEAR INT, TEMP_FARENHEIT FLOAT,RAIN_INCH FLOAT);
+INSERT INTO stats VALUES(13,1,2010,57.4,0.31);
+INSERT INTO stats VALUES(13,5,2010,91.7,5.15);
+INSERT INTO stats VALUES(13,12,2010,12.6,8.34);
+INSERT INTO stats VALUES(13,9,2010,100.3,10.34);
+INSERT INTO stats VALUES(44,9,2010,27.2,3.45);
+INSERT INTO stats VALUES(44,2,2010,27.3,0.18);
+INSERT INTO stats VALUES(44,6,2010,74.8,2.11);
+INSERT INTO stats VALUES(66,3,2010,6.7,2.1);
+INSERT INTO stats VALUES(66,7,2010,65.8,4.52);
+
+1. SELECT * from stats s JOIN station t ON s.stats_id=t.station_id where temp_farenheit IN (SELECT MAX(temp_farenheit) FROM stats) AND rain_inch IN(SELECT MAX(rain_inch) FROM stats);
++----------+-------+------+----------------+-----------+------------+---------+-------+--------+--------+
+| Stats_ID | Month | YEAR | TEMP_FARENHEIT | RAIN_INCH | Station_ID | City    | State | LAT_IN | LONG_W |
++----------+-------+------+----------------+-----------+------------+---------+-------+--------+--------+
+|       13 |     9 | 2010 |          100.3 |     10.34 |         13 | Phoenix | AZ    |     33 |    112 |
++----------+-------+------+----------------+-----------+------------+---------+-------+--------+--------+
+1 row in set (0.00 sec)
+
+2. SELECT s1.stats_ID,s2.city,s2.state,s1.month,s1.year,ROUND((s1.temp_farenheit-32)*(5/9),2) AS TEMP_CELCIUS,ROUND((s1.rain_inch)*3937,2) AS RAIN_CMS FROM Stats s1 JOIN station s2 ON s1.stats_ID=s2.station_ID;
++----------+---------+-------+-------+------+--------------+----------+
+| stats_ID | city    | state | month | year | TEMP_CELCIUS | RAIN_CMS |
++----------+---------+-------+-------+------+--------------+----------+
+|       13 | Phoenix | AZ    |     1 | 2010 |        14.11 |  1220.47 |
+|       13 | Phoenix | AZ    |     5 | 2010 |        33.17 | 20275.55 |
+|       13 | Phoenix | AZ    |    12 | 2010 |       -10.78 | 32834.58 |
+|       13 | Phoenix | AZ    |     9 | 2010 |        37.94 | 40708.58 |
+|       44 | Denver  | CO    |     9 | 2010 |        -2.67 | 13582.65 |
+|       44 | Denver  | CO    |     2 | 2010 |        -2.61 |   708.66 |
+|       44 | Denver  | CO    |     6 | 2010 |        23.78 |  8307.07 |
+|       66 | Caribou | ME    |     3 | 2010 |       -14.06 |  8267.70 |
+|       66 | Caribou | ME    |     7 | 2010 |        18.78 | 17795.24 |
++----------+---------+-------+-------+------+--------------+----------+
+
+3. 
+
+4. SELECT DISTINCT state FROM stats s LEFT JOIN station t ON s.stats_id=t.station_id WHERE stats_id IN (SELECT stats_id FROM stats WHERE temp_farenheit IN (SELECT MIN(temp_farenheit) FROM stats) OR rain_inch IN (SELECT MAX(rain_inch) FROM stats));
++-------+
+| state |
++-------+
+| AZ    |
+| ME    |
++-------+
+2 rows in set (0.00 sec)
+
+5.  SELECT city,state,rain_inch,avg(rain_inch) FROM stats s JOIN station t ON s.stats_id=t.station_id WHERE rain_inch<(SELECT MAX(rain_inch) FROM stats);
++---------+-------+-----------+-------------------+
+| city    | state | rain_inch | avg(rain_inch)    |
++---------+-------+-----------+-------------------+
+| Phoenix | AZ    |      0.31 | 3.270000010728836 |
++---------+-------+-----------+-------------------+
+1 row in set (0.00 sec)
+
+6. SELECT city,MIN(temp_farenheit),month FROM stats s JOIN station t on s.stats_id=t.station_id WHERE temp_farenheit>(SELECT MIN(temp_farenheit) FROM stats);
++---------+---------------------+-------+
+| city    | MIN(temp_farenheit) | month |
++---------+---------------------+-------+
+| Phoenix |                12.6 |     1 |
++---------+---------------------+-------+
+1 row in set (0.00 sec)
+
+9. select stats_id from stats where (temp_farenheit-32)*5/9<0;
++----------+
+| stats_id |
++----------+
+|       13 |
+|       44 |
+|       44 |
+|       66 |
++----------+
+4 rows in set (0.01 sec)
+
+10. select count(rain_inch),state from stats s join station t on s.stats_id=t.st_id group by state having rain_inch> (select avg(rain_inch) from stats);
